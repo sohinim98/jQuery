@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <title>Creating an order and closing the trade after 5 seconds</title>
+            <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+            <script type="text/javascript">
+            var last;
+            $(document).ready(function(){
+                $("button").click(function(){
+                    //main link: api-fxpractice.oanda.com
+                    $.ajax({
+                        url: "https://api-fxpractice.oanda.com/v3/accounts/101-002-7515328-001/orders",
+                        method: 'POST',
+                        contentType: 'application/json',
+                        headers: {
+                            Authorization: 'Bearer d281283f4f8a7ceee23d912f46c484a4-84ea2b7dbc3320043c5ad32cd0010256' 
+                        },
+                        data: JSON.stringify({
+                            order: {
+                                instrument: "USD_CAD",
+                                units: "2",
+                                type: "MARKET"
+                            }
+                        }),
+                        success: function(data, status){
+                            alert("Data: " + data + "\nStatus: " + status);
+                        }
+    
+                    });
+                    setTimeout(function(){
+                    $.ajax({
+                    url: "https://api-fxpractice.oanda.com/v3/accounts/101-002-7515328-001/openTrades",
+                    type: 'GET',
+                    headers: {
+                        Authorization: 'Bearer d281283f4f8a7ceee23d912f46c484a4-84ea2b7dbc3320043c5ad32cd0010256' 
+                    },
+                    success: function(data, status){
+                        //console.log("Data: " + data + "\nStatus: " + status);
+                        console.log(data.lastTransactionID);
+                        last = data.lastTransactionID;
+                    }
+                });
+                        
+                    }, 4000);
+                    setTimeout(function(){
+                        $.ajax({
+                    url: 'https://api-fxpractice.oanda.com/v3/accounts/101-002-7515328-001/trades/'+last+'/close',
+                    type: 'PUT',
+                    headers: {
+                        Authorization: 'Bearer d281283f4f8a7ceee23d912f46c484a4-84ea2b7dbc3320043c5ad32cd0010256' 
+                    },
+                    success: function(data, status){
+                        console.log("Data: " + data + "\nStatus: " + status);
+                    }
+                });
+                    }, 5000);
+    
+                });
+    
+            });
+            </script>
+    </head>
+    <body>
+        <button>Click to open and close trade!</button>
+    </body>
+</html>

@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script type="text/javascript">
+            function A() {
+    writeMessage("Calling Function A");
+    return $.ajax({
+        url: "/scripts/S9/1.json",
+        type: "GET",                    
+        dataType: "json"
+    });
+}
+ 
+ 
+function B(resultFromA) {
+    writeMessage("In Function B. Result From A = " + resultFromA.data);
+    return $.ajax({
+        url: "/scripts/S9/2.json",
+        type: "GET",
+        dataType: "json"
+    });
+}
+ 
+ 
+function C(resultFromB) {
+    writeMessage("In Function C. Result From B =  " + resultFromB.data);
+    return $.ajax({
+        url: "/scripts/S9/3.json",
+        type: "GET",
+        dataType: "json"
+    });
+}
+ 
+function D(resultFromC) {
+    writeMessage("In Function D. Result From C = " + resultFromC.data);
+}
+ 
+A().then(B).then(C).then(D);
+ 
+function writeMessage(msg) {
+    $("#para").append(msg + "<br>");                 
+}
+            </script>
+    </head>
+</html>

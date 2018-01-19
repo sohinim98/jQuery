@@ -1,0 +1,38 @@
+<html>
+    <head>
+<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json2/20121008/json2.min.js"></script>-->
+            <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+            <!--<script type="text/javascript" src="http://developer.oanda.com/oandajs/oanda.js"></script>-->
+            <script type="text/javascript">
+            $(document).ready(function(){
+                $("button").click(function(){
+                    //main link: api-fxpractice.oanda.com
+                    $.ajax({
+                        url: "https://api-fxpractice.oanda.com/v3/accounts/101-002-7515328-001/orders",
+                        method: 'POST',
+                        contentType: 'application/json',
+                        headers: {
+                            Authorization: 'Bearer d281283f4f8a7ceee23d912f46c484a4-84ea2b7dbc3320043c5ad32cd0010256' 
+                        },
+                        data: JSON.stringify({
+                            order: {
+                                instrument: "USD_CAD",
+                                units: "2",
+                                type: "MARKET"
+                            }
+                        }),
+                        success: function(data, status){
+                            alert("Data: " + data + "\nStatus: " + status);
+                        }
+    
+                    });
+    
+                });
+    
+            });
+            </script>
+    </head>
+    <body>
+        <button>Click to make a trade!</button>
+    </body>
+</html>

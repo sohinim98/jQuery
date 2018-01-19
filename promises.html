@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <title>Opening and clsoing a trade using promises</title>
+        <script type="application/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("button").click(function(){
+            //main link: api-fxpractice.oanda.com
+            //opening a trade
+            $.ajax({
+                        url: "https://api-fxpractice.oanda.com/v3/accounts/101-002-7515328-001/orders",
+                        method: 'POST',
+                        contentType: 'application/json',
+                        headers: {
+                            Authorization: 'Bearer d281283f4f8a7ceee23d912f46c484a4-84ea2b7dbc3320043c5ad32cd0010256' 
+                        },
+                        data: JSON.stringify({
+                            order: {
+                                instrument: "USD_CAD",
+                                units: "2",
+                                type: "MARKET"
+                            }
+                        })
+    
+                    }).then(
+                        function task2() {
+                            //1st callback to get status(margin used)
+                            return $.ajax({
+                                url: "https://api-fxpractice.oanda.com/v3/accounts/101-002-7515328-001",
+                                type: 'GET',
+                                headers: {
+                                    Authorization: 'Bearer d281283f4f8a7ceee23d912f46c484a4-84ea2b7dbc3320043c5ad32cd0010256' 
+                                }
+                            });
+                }).then(
+                            function task3(data) {
+                                //2nd callback to close trade
+                                console.log(data.account.marginAvailable);
+                console.log(data.lastTransactionID);
+                return $.ajax({
+                    url: 'https://api-fxpractice.oanda.com/v3/accounts/101-002-7515328-001/trades/'+data.lastTransactionID+'/close',
+                    type: 'PUT',
+                    headers: {
+                        Authorization: 'Bearer d281283f4f8a7ceee23d912f46c484a4-84ea2b7dbc3320043c5ad32cd0010256' 
+                    }
+                });
+                            }).then(
+                                function task4() {
+                                    //3rd callback to get status again(margin used)
+                                    return $.ajax({
+                                        url: "https://api-fxpractice.oanda.com/v3/accounts/101-002-7515328-001",
+                                        type: 'GET',
+                                        headers: {
+                                            Authorization: 'Bearer d281283f4f8a7ceee23d912f46c484a4-84ea2b7dbc3320043c5ad32cd0010256' 
+                                        }
+                                    });
+                                }).then(
+                                    function display(data) {
+                                        console.log(data.account.marginAvailable);
+                                        console.log("Done!");
+                                    }
+                                )
+        });
+    });
+    </script>
+    </head>
+    <body>
+        <button>Click to open and close trade!</button>
+    </body>
+
+</html>
